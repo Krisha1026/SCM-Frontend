@@ -1,0 +1,860 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manufacturer Dashboard | Cozy Comfort</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #4a6fa5;
+            --secondary: #6b8cae;
+            --light: #F8F1FF;
+            --dark: #2E294E;
+            --warm: #FF9F1C;
+            --success: #6BCB77;
+            --warning: #FFD166;
+            --danger: #EF476F;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f9f6ff;
+            color: var(--dark);
+            background-image: url('https://images.unsplash.com/photo-1531265726475-52ad60219627?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+        
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(248, 241, 255, 0.9);
+            z-index: -1;
+        }
+        
+        .navbar-brand {
+            font-family: 'Playfair Display', serif;
+            font-weight: 700;
+            color: var(--primary);
+            font-size: 1.8rem;
+        }
+        
+        .dashboard-header {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border-bottom: 5px solid var(--primary);
+        }
+        
+        .card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+            margin-bottom: 1.5rem;
+            overflow: hidden;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+        }
+        
+        .card-header {
+            background: var(--primary);
+            color: white;
+            font-weight: 600;
+            border-bottom: none;
+        }
+        
+        .table th {
+            background: var(--light);
+            color: var(--dark);
+            font-weight: 600;
+            border-top: none;
+        }
+        
+        .badge {
+            font-weight: 500;
+            padding: 0.5em 0.75em;
+        }
+        
+        .btn-primary {
+            background: var(--primary);
+            border: none;
+            padding: 0.5rem 1.5rem;
+            border-radius: 50px;
+        }
+        
+        .btn-primary:hover {
+            background: #3a5a8c;
+        }
+        
+        .btn-success {
+            background: var(--success);
+            border: none;
+            padding: 0.5rem 1.5rem;
+            border-radius: 50px;
+        }
+        
+        .btn-warning {
+            background: var(--warning);
+            border: none;
+            padding: 0.5rem 1.5rem;
+            border-radius: 50px;
+            color: var(--dark);
+        }
+        
+        .btn-danger {
+            background: var(--danger);
+            border: none;
+            padding: 0.5rem 1.5rem;
+            border-radius: 50px;
+        }
+        
+        .btn-info {
+            background: #17a2b8;
+            border: none;
+            padding: 0.5rem 1.5rem;
+            border-radius: 50px;
+            color: white;
+        }
+        
+        .capacity-meter {
+            height: 20px;
+            background-color: #e9ecef;
+            border-radius: 5px;
+            margin-bottom: 5px;
+        }
+        
+        .capacity-fill {
+            height: 100%;
+            border-radius: 5px;
+            background-color: var(--primary);
+            transition: width 0.5s ease;
+        }
+        
+        .stat-card {
+            background: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+        
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+        
+        .stat-label {
+            color: #666;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .order-summary {
+            background: white;
+            border-radius: 10px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+        }
+        
+        .order-summary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .modal-header {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .btn-close-white {
+            filter: invert(1);
+        }
+        
+        .table-hover tbody tr:hover {
+            background-color: rgba(248, 241, 255, 0.5);
+        }
+        
+        .form-control:focus, .form-select:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 0.25rem rgba(74, 111, 165, 0.25);
+        }
+        
+        .input-group-text {
+            background-color: var(--light);
+        }
+        
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1100;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <i class="fas fa-cloud me-2"></i>Cozy Comfort
+            </a>
+            <div class="d-flex align-items-center">
+                <span class="badge bg-primary rounded-pill px-3 py-2 me-3">
+                    Manufacturer Portal
+                </span>
+                <div class="dropdown">
+                    <button class="btn btn-outline-primary dropdown-toggle" type="button" id="userDropdown" data-bs-toggle="dropdown">
+                        <i class="fas fa-user-circle me-1"></i> Account
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="#"><i class="fas fa-user me-2"></i>Profile</a></li>
+                        <li><a class="dropdown-item" href="#"><i class="fas fa-cog me-2"></i>Settings</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="login.html"><i class="fas fa-sign-out-alt me-2"></i>Logout</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- Main Content -->
+    <div class="container py-4">
+        <div class="dashboard-header">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <h1 class="display-5 fw-bold mb-3"><i class="fas fa-industry me-2"></i>Manufacturer Dashboard</h1>
+                    <p class="lead mb-0">Manage production and inventory of Cozy Comfort blankets</p>
+                </div>
+                <div class="col-md-4 text-end">
+                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addModelModal">
+                        <i class="fas fa-plus me-2"></i>Add New Model
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row">
+            <!-- Blanket Models Section -->
+            <div class="col-lg-8">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h3 class="mb-0"><i class="fas fa-boxes me-2"></i>Blanket Models</h3>
+                        <div class="dropdown">
+                            <button class="btn btn-sm btn-outline-light dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                <i class="fas fa-filter me-1"></i>Filter
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="#">All Models</a></li>
+                                <li><a class="dropdown-item" href="#">Low Stock</a></li>
+                                <li><a class="dropdown-item" href="#">High Capacity</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle">
+                                <thead>
+                                    <tr>
+                                        <th>Model ID</th>
+                                        <th>Name</th>
+                                        <th>Material</th>
+                                        <th>Stock</th>
+                                        <th>Capacity</th>
+                                        <th>Unit Cost</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="modelTable" class="table-group-divider">
+                                    <!-- Models will be loaded here -->
+                                    <tr>
+                                        <td colspan="7" class="text-center py-4">
+                                            <div class="spinner-border text-primary" role="status">
+                                                <span class="visually-hidden">Loading...</span>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Production Summary Section -->
+            <div class="col-lg-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="mb-0"><i class="fas fa-chart-pie me-2"></i>Production Summary</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="row mb-4">
+                            <div class="col-6">
+                                <div class="stat-card">
+                                    <div class="stat-value" id="totalModels">0</div>
+                                    <div class="stat-label">Total Models</div>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="stat-card">
+                                    <div class="stat-value" id="totalInventory">0</div>
+                                    <div class="stat-label">Total Inventory</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="stat-card">
+                                    <div class="stat-label">Capacity Utilization</div>
+                                    <div class="capacity-meter mt-2">
+                                        <div class="capacity-fill" id="capacityFill" style="width: 0%"></div>
+                                    </div>
+                                    <span id="capacityPercent">0%</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h3 class="mb-0"><i class="fas fa-clock me-2"></i>Recent Distributor Orders</h3>
+                        <button class="btn btn-sm btn-outline-light" onclick="loadOrders()">
+                            <i class="fas fa-sync"></i>
+                        </button>
+                    </div>
+                    <div class="card-body">
+                        <div id="recentOrders">
+                            <!-- Orders will be loaded here -->
+                            <div class="text-center py-4">
+                                <div class="spinner-border text-primary" role="status">
+                                    <span class="visually-hidden">Loading...</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Add Model Modal -->
+    <div class="modal fade" id="addModelModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="fas fa-plus-circle me-2"></i>Add New Blanket Model</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="modelForm">
+                        <div class="mb-3">
+                            <label class="form-label">Model Name</label>
+                            <input type="text" class="form-control" id="modelName" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Material</label>
+                            <input type="text" class="form-control" id="material" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Initial Stock</label>
+                            <input type="number" class="form-control" id="initialStock" min="0" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Production Capacity (units/week)</label>
+                            <input type="number" class="form-control" id="productionCapacity" min="1" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Description</label>
+                            <textarea class="form-control" id="description" rows="3"></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Unit Cost ($)</label>
+                            <div class="input-group">
+                                <span class="input-group-text">$</span>
+                                <input type="number" step="0.01" class="form-control" id="unitCost" min="0.01" required>
+                            </div>
+                        </div>
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save me-2"></i>Add Model
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Update Inventory Modal -->
+    <div class="modal fade" id="updateInventoryModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="fas fa-boxes me-2"></i>Update Inventory</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="inventoryForm">
+                        <input type="hidden" id="inventoryModelId">
+                        <div class="mb-3">
+                            <label class="form-label">Current Stock</label>
+                            <input type="text" class="form-control" id="currentStockDisplay" readonly>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Action</label>
+                            <select class="form-select" id="inventoryAction" required>
+                                <option value="add">Add to Inventory</option>
+                                <option value="remove">Remove from Inventory</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Quantity</label>
+                            <input type="number" class="form-control" id="inventoryQuantity" min="1" required>
+                        </div>
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save me-2"></i>Update Inventory
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Edit Model Modal -->
+    <div class="modal fade" id="editModelModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="fas fa-edit me-2"></i>Edit Blanket Model</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="editModelForm">
+                        <input type="hidden" id="editModelId">
+                        <div class="mb-3">
+                            <label class="form-label">Model Name</label>
+                            <input type="text" class="form-control" id="editModelName" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Material</label>
+                            <input type="text" class="form-control" id="editMaterial" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Production Capacity (units/week)</label>
+                            <input type="number" class="form-control" id="editProductionCapacity" min="1" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Description</label>
+                            <textarea class="form-control" id="editDescription" rows="3"></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Unit Cost ($)</label>
+                            <div class="input-group">
+                                <span class="input-group-text">$</span>
+                                <input type="number" step="0.01" class="form-control" id="editUnitCost" min="0.01" required>
+                            </div>
+                        </div>
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save me-2"></i>Save Changes
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+    
+    <script>
+        // Base URL for the Manufacturer service
+        const MANUFACTURER_API = 'http://localhost:5000/api';
+        
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            loadModels();
+            loadOrders();
+        });
+        
+        // Load all blanket models from API
+        function loadModels() {
+            fetch(`${MANUFACTURER_API}/blankets`)
+                .then(response => {
+                    if (!response.ok) throw new Error('Failed to load models');
+                    return response.json();
+                })
+                .then(models => {
+                    const modelTable = document.getElementById('modelTable');
+                    
+                   
+                    modelTable.innerHTML = '';
+                    
+                    // Calculate summary stats
+                    let totalInventory = 0;
+                    let totalCapacity = 0;
+                    let usedCapacity = 0;
+                    
+                    // Add models to table
+                    if (models.length === 0) {
+                        modelTable.innerHTML = `
+                            <tr>
+                                <td colspan="7" class="text-center py-4 text-muted">
+                                    <i class="fas fa-inbox fa-2x mb-3"></i>
+                                    <p>No blanket models found</p>
+                                    <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#addModelModal">
+                                        <i class="fas fa-plus me-2"></i>Add First Model
+                                    </button>
+                                </td>
+                            </tr>
+                        `;
+                    } else {
+                        models.forEach(model => {
+                            const utilization = model.current_stock / model.production_capacity * 100;
+                            totalInventory += model.current_stock;
+                            totalCapacity += model.production_capacity;
+                            usedCapacity += model.current_stock;
+                            
+                            const row = document.createElement('tr');
+                            row.innerHTML = `
+                                <td>${model.id}</td>
+                                <td>${model.model_name}</td>
+                                <td>${model.material}</td>
+                                <td>${model.current_stock}</td>
+                                <td>
+                                    <div class="capacity-meter">
+                                        <div class="capacity-fill" style="width: ${utilization > 100 ? 100 : utilization}%"></div>
+                                    </div>
+                                    ${utilization.toFixed(1)}%
+                                </td>
+                                <td>$${model.unit_cost.toFixed(2)}</td>
+                                <td>
+                                    <div class="d-flex gap-2">
+                                        <button class="btn btn-sm btn-outline-info" onclick="showUpdateInventory(${model.id}, ${model.current_stock})">
+                                            <i class="fas fa-box"></i>
+                                        </button>
+                                        <button class="btn btn-sm btn-outline-warning" onclick="showEditModelModal(${model.id})">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button class="btn btn-sm btn-outline-danger" onclick="deleteModel(${model.id})">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            `;
+                            modelTable.appendChild(row);
+                        });
+                    }
+                    
+                    // Update summary stats
+                    document.getElementById('totalModels').textContent = models.length;
+                    document.getElementById('totalInventory').textContent = totalInventory;
+                    
+                    const overallUtilization = totalCapacity > 0 ? (usedCapacity / totalCapacity * 100) : 0;
+                    document.getElementById('capacityFill').style.width = `${overallUtilization}%`;
+                    document.getElementById('capacityPercent').textContent = `${overallUtilization.toFixed(1)}%`;
+                })
+                .catch(error => {
+                    console.error('Error loading models:', error);
+                    modelTable.innerHTML = `
+                        <tr>
+                            <td colspan="7" class="text-center text-danger py-4">
+                                <i class="fas fa-exclamation-triangle fa-2x mb-3"></i>
+                                <p>Failed to load models</p>
+                                <button class="btn btn-sm btn-primary" onclick="loadModels()">
+                                    <i class="fas fa-sync me-2"></i>Retry
+                                </button>
+                            </td>
+                        </tr>
+                    `;
+                });
+        }
+        
+        // Load recent orders
+        function loadOrders() {
+            fetch(`${MANUFACTURER_API}/orders`)
+                .then(response => {
+                    if (!response.ok) throw new Error('Failed to load orders');
+                    return response.json();
+                })
+                .then(orders => {
+                    const recentOrders = document.getElementById('recentOrders');
+                    recentOrders.innerHTML = '';
+                    
+                    if (orders.length === 0) {
+                        recentOrders.innerHTML = `
+                            <div class="text-center py-4 text-muted">
+                                <i class="fas fa-inbox fa-2x mb-3"></i>
+                                <p>No recent orders</p>
+                            </div>
+                        `;
+                    } else {
+                        const list = document.createElement('div');
+                        orders.slice(0, 5).forEach(order => {
+                            const orderDiv = document.createElement('div');
+                            orderDiv.className = 'order-summary';
+                            orderDiv.innerHTML = `
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <strong>Order #${order.id}</strong>
+                                    <span class="badge bg-primary">${order.status || 'pending'}</span>
+                                </div>
+                                <div class="mb-1"><small class="text-muted">Distributor:</small> ${order.distributor_id}</div>
+                                <div class="mb-1"><small class="text-muted">Model:</small> ${order.blanket_model_id}</div>
+                                <div class="mb-2"><small class="text-muted">Qty:</small> ${order.quantity}</div>
+                            `;
+                            list.appendChild(orderDiv);
+                        });
+                        recentOrders.appendChild(list);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error loading orders:', error);
+                    recentOrders.innerHTML = `
+                        <div class="text-center text-danger py-4">
+                            <i class="fas fa-exclamation-triangle fa-2x mb-3"></i>
+                            <p>Failed to load orders</p>
+                            <button class="btn btn-sm btn-primary" onclick="loadOrders()">
+                                <i class="fas fa-sync me-2"></i>Retry
+                            </button>
+                        </div>
+                    `;
+                });
+        }
+        
+        // Handle new model form submission
+        document.getElementById('modelForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const submitBtn = this.querySelector('button[type="submit"]');
+            const originalBtnText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Adding...';
+            submitBtn.disabled = true;
+            
+            const newModel = {
+                model_name: document.getElementById('modelName').value,
+                material: document.getElementById('material').value,
+                current_stock: parseInt(document.getElementById('initialStock').value),
+                production_capacity: parseInt(document.getElementById('productionCapacity').value),
+                description: document.getElementById('description').value,
+                unit_cost: parseFloat(document.getElementById('unitCost').value)
+            };
+            
+            fetch(`${MANUFACTURER_API}/blankets`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(newModel)
+            })
+            .then(response => {
+                if (!response.ok) throw new Error('Failed to add model');
+                return response.json();
+            })
+            .then(data => {
+                showToast('success', 'Model added successfully!');
+                loadModels();
+                document.getElementById('modelForm').reset();
+                bootstrap.Modal.getInstance(document.getElementById('addModelModal')).hide();
+            })
+            .catch(error => {
+                console.error('Error adding model:', error);
+                showToast('error', error.message || 'Failed to add model');
+            })
+            .finally(() => {
+                submitBtn.innerHTML = originalBtnText;
+                submitBtn.disabled = false;
+            });
+        });
+        
+        // Show update inventory modal
+        function showUpdateInventory(modelId, currentStock) {
+            document.getElementById('inventoryModelId').value = modelId;
+            document.getElementById('currentStockDisplay').value = currentStock;
+            const modal = new bootstrap.Modal(document.getElementById('updateInventoryModal'));
+            modal.show();
+        }
+        
+        // Handle inventory update form submission
+        document.getElementById('inventoryForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const submitBtn = this.querySelector('button[type="submit"]');
+            const originalBtnText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Updating...';
+            submitBtn.disabled = true;
+            
+            const updateData = {
+                blanket_id: parseInt(document.getElementById('inventoryModelId').value),
+                action: document.getElementById('inventoryAction').value,
+                quantity: parseInt(document.getElementById('inventoryQuantity').value)
+            };
+            
+            fetch(`${MANUFACTURER_API}/inventory`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(updateData)
+            })
+            .then(response => {
+                if (!response.ok) throw new Error('Failed to update inventory');
+                return response.json();
+            })
+            .then(data => {
+                showToast('success', 'Inventory updated successfully!');
+                loadModels();
+                bootstrap.Modal.getInstance(document.getElementById('updateInventoryModal')).hide();
+            })
+            .catch(error => {
+                console.error('Error updating inventory:', error);
+                showToast('error', error.message || 'Failed to update inventory');
+            })
+            .finally(() => {
+                submitBtn.innerHTML = originalBtnText;
+                submitBtn.disabled = false;
+            });
+        });
+        
+        // Show edit model modal
+        function showEditModelModal(modelId) {
+            fetch(`${MANUFACTURER_API}/blankets/${modelId}`)
+                .then(response => {
+                    if (!response.ok) throw new Error('Failed to fetch model details');
+                    return response.json();
+                })
+                .then(model => {
+                    
+                    document.getElementById('editModelId').value = model.id;
+                    document.getElementById('editModelName').value = model.model_name;
+                    document.getElementById('editMaterial').value = model.material;
+                    document.getElementById('editProductionCapacity').value = model.production_capacity;
+                    document.getElementById('editDescription').value = model.description || '';
+                    document.getElementById('editUnitCost').value = model.unit_cost;
+                    
+                    // Show the modal
+                    const modal = new bootstrap.Modal(document.getElementById('editModelModal'));
+                    modal.show();
+                })
+                .catch(error => {
+                    console.error('Error fetching model details:', error);
+                    showToast('error', error.message || 'Failed to load model details');
+                });
+        }
+        
+        // Handle edit model form submission
+        document.getElementById('editModelForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const submitBtn = this.querySelector('button[type="submit"]');
+            const originalBtnText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Saving...';
+            submitBtn.disabled = true;
+            
+            const modelId = document.getElementById('editModelId').value;
+            const updatedModel = {
+                model_name: document.getElementById('editModelName').value,
+                material: document.getElementById('editMaterial').value,
+                production_capacity: parseInt(document.getElementById('editProductionCapacity').value),
+                description: document.getElementById('editDescription').value,
+                unit_cost: parseFloat(document.getElementById('editUnitCost').value)
+            };
+            
+            fetch(`${MANUFACTURER_API}/blankets/${modelId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(updatedModel)
+            })
+            .then(response => {
+                if (!response.ok) throw new Error('Failed to update model');
+                return response.json();
+            })
+            .then(data => {
+                showToast('success', 'Model updated successfully!');
+                loadModels();
+                bootstrap.Modal.getInstance(document.getElementById('editModelModal')).hide();
+            })
+            .catch(error => {
+                console.error('Error updating model:', error);
+                showToast('error', error.message || 'Failed to update model');
+            })
+            .finally(() => {
+                submitBtn.innerHTML = originalBtnText;
+                submitBtn.disabled = false;
+            });
+        });
+        
+        // Delete model function
+        function deleteModel(modelId) {
+            if (confirm('Are you sure you want to delete this model? This action cannot be undone.')) {
+                fetch(`${MANUFACTURER_API}/blankets/${modelId}`, {
+                    method: 'DELETE'
+                })
+                .then(response => {
+                    if (!response.ok) throw new Error('Failed to delete model');
+                    return response.json();
+                })
+                .then(data => {
+                    showToast('success', 'Model deleted successfully!');
+                    loadModels();
+                })
+                .catch(error => {
+                    console.error('Error deleting model:', error);
+                    showToast('error', error.message || 'Failed to delete model');
+                });
+            }
+        }
+        
+        // Show toast notification
+        function showToast(type, message) {
+            const toastContainer = document.createElement('div');
+            toastContainer.className = `toast align-items-center text-white bg-${type} border-0`;
+            toastContainer.setAttribute('role', 'alert');
+            toastContainer.setAttribute('aria-live', 'assertive');
+            toastContainer.setAttribute('aria-atomic', 'true');
+            
+            toastContainer.innerHTML = `
+                <div class="d-flex">
+                    <div class="toast-body">
+                        <i class="fas ${type === 'success' ? 'fa-check-circle' : (type === 'error' ? 'fa-exclamation-circle' : 'fa-info-circle')} me-2"></i>
+                        ${message}
+                    </div>
+                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+                </div>
+            `;
+            
+            document.body.appendChild(toastContainer);
+            const toast = new bootstrap.Toast(toastContainer);
+            toast.show();
+            
+            
+            toastContainer.addEventListener('hidden.bs.toast', () => {
+                toastContainer.remove();
+            });
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Create your Cozy Comfort account">
+    <title>Cozy Comfort | Sign Up</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+        :root {
+            --primary: #4a6fa5;
+            --primary-dark: #3a5a8c;
+            --secondary: #6b8cae;
+            --light: #F8F1FF;
+            --dark: #2E294E;
+            --error: #dc3545;
+            --success: #28a745;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f9f6ff;
+            background-image: url('https://images.unsplash.com/photo-1531265726475-52ad60219627?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            margin: 0;
+            padding: 20px;
+        }
+        
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(248, 241, 255, 0.85);
+            z-index: -1;
+        }
+        
+        .signup-container {
+            max-width: 500px;
+            width: 100%;
+            margin: 0 auto;
+        }
+        
+        .signup-card {
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            overflow: hidden;
+            transition: transform 0.3s ease;
+        }
+        
+        .signup-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .signup-header {
+            background: var(--primary);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+        }
+        
+        .brand-logo {
+            font-family: 'Playfair Display', serif;
+            font-weight: 700;
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .signup-body {
+            background: white;
+            padding: 2rem;
+        }
+        
+        .form-control {
+            padding: 12px 15px;
+            border-radius: 8px;
+        }
+        
+        .form-control:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 0.25rem rgba(74, 111, 165, 0.25);
+        }
+        
+        .input-group-text {
+            background-color: var(--light);
+            border-radius: 8px 0 0 8px !important;
+        }
+        
+        .btn-signup {
+            background: var(--primary);
+            border: none;
+            padding: 12px;
+            border-radius: 50px;
+            font-weight: 600;
+            width: 100%;
+            transition: background-color 0.3s ease;
+            letter-spacing: 0.5px;
+        }
+        
+        .btn-signup:hover, .btn-signup:focus {
+            background: var(--primary-dark);
+        }
+        
+        .btn-outline-primary {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+        
+        .btn-outline-primary:hover, .btn-outline-primary:focus {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .signup-footer {
+            text-align: center;
+            margin-top: 1.5rem;
+            color: var(--dark);
+            font-size: 0.9rem;
+        }
+        
+        .signup-footer a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+        
+        .signup-footer a:hover, .signup-footer a:focus {
+            color: var(--primary-dark);
+            text-decoration: underline;
+        }
+        
+        .divider {
+            display: flex;
+            align-items: center;
+            margin: 1.5rem 0;
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        .divider::before, .divider::after {
+            content: "";
+            flex: 1;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .divider::before {
+            margin-right: 1rem;
+        }
+        
+        .divider::after {
+            margin-left: 1rem;
+        }
+        
+        .toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1100;
+            max-width: 350px;
+            width: 100%;
+        }
+        
+        .form-check-input:checked {
+            background-color: var(--primary);
+            border-color: var(--primary);
+        }
+        
+        .form-check-input:focus {
+            box-shadow: 0 0 0 0.25rem rgba(74, 111, 165, 0.25);
+        }
+        
+        .invalid-feedback {
+            color: var(--error);
+            font-size: 0.85rem;
+            margin-top: 0.25rem;
+        }
+        
+        .is-invalid {
+            border-color: var(--error) !important;
+        }
+        
+        .password-toggle {
+            cursor: pointer;
+            background-color: var(--light);
+            border-radius: 0 8px 8px 0 !important;
+        }
+        
+        .password-strength {
+            height: 5px;
+            background-color: #e9ecef;
+            border-radius: 5px;
+            margin-top: 0.5rem;
+            overflow: hidden;
+        }
+        
+        .password-strength-bar {
+            height: 100%;
+            width: 0%;
+            transition: width 0.3s ease, background-color 0.3s ease;
+        }
+        
+        @media (max-width: 576px) {
+            .signup-container {
+                padding: 0 15px;
+            }
+            
+            .signup-header {
+                padding: 1.5rem;
+            }
+            
+            .signup-body {
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="signup-container">
+            <div class="signup-card">
+                <div class="signup-header">
+                    <h1 class="brand-logo">
+                        <i class="fas fa-cloud me-2" aria-hidden="true"></i>Cozy Comfort
+                    </h1>
+                    <p class="mb-0">Create your account</p>
+                </div>
+                <div class="signup-body">
+                    <form id="signupForm" novalidate>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="firstName" class="form-label">First Name</label>
+                                <input type="text" class="form-control" id="firstName" placeholder="First name" required>
+                                <div class="invalid-feedback">Please enter your first name</div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="lastName" class="form-label">Last Name</label>
+                                <input type="text" class="form-control" id="lastName" placeholder="Last name" required>
+                                <div class="invalid-feedback">Please enter your last name</div>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email Address</label>
+                            <div class="input-group has-validation">
+                                <span class="input-group-text"><i class="fas fa-envelope" aria-hidden="true"></i></span>
+                                <input type="email" class="form-control" id="email" placeholder="Enter your email" required>
+                                <div class="invalid-feedback">Please enter a valid email address</div>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="password" class="form-label">Password</label>
+                            <div class="input-group has-validation">
+                                <span class="input-group-text"><i class="fas fa-lock" aria-hidden="true"></i></span>
+                                <input type="password" class="form-control" id="password" placeholder="Create a password" required minlength="8">
+                                <span class="input-group-text password-toggle" id="togglePassword">
+                                    <i class="fas fa-eye" aria-hidden="true"></i>
+                                </span>
+                                <div class="invalid-feedback">Password must be at least 8 characters</div>
+                            </div>
+                            <div class="password-strength mt-2">
+                                <div class="password-strength-bar" id="passwordStrength"></div>
+                            </div>
+                            <small class="text-muted">Use at least 8 characters with a mix of letters, numbers & symbols</small>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="confirmPassword" class="form-label">Confirm Password</label>
+                            <div class="input-group has-validation">
+                                <span class="input-group-text"><i class="fas fa-lock" aria-hidden="true"></i></span>
+                                <input type="password" class="form-control" id="confirmPassword" placeholder="Confirm your password" required>
+                                <div class="invalid-feedback">Passwords must match</div>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="userType" class="form-label">Account Type</label>
+                            <select class="form-select" id="userType" required>
+                                <option value="" selected disabled>Select account type</option>
+                                <option value="manufacturer">Manufacturer</option>
+                                <option value="distributor">Distributor</option>
+                                <option value="seller">Seller</option>
+                            </select>
+                            <div class="invalid-feedback">Please select an account type</div>
+                        </div>
+                        
+                        <div class="mb-3 form-check">
+                            <input type="checkbox" class="form-check-input" id="termsAgreement" required>
+                            <label class="form-check-label" for="termsAgreement">
+                                I agree to the <a href="#" class="text-primary">Terms of Service</a> and <a href="#" class="text-primary">Privacy Policy</a>
+                            </label>
+                            <div class="invalid-feedback">You must agree to the terms</div>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary btn-signup mb-3">
+                            <i class="fas fa-user-plus me-2" aria-hidden="true"></i>Create Account
+                        </button>
+                        
+                        <div class="divider" aria-hidden="true">or</div>
+                        
+                        <div class="d-grid gap-2">
+                            <button type="button" class="btn btn-outline-primary" aria-label="Sign up with Google">
+                                <i class="fab fa-google me-2" aria-hidden="true"></i>Sign up with Google
+                            </button>
+                            <button type="button" class="btn btn-outline-primary" aria-label="Sign up with Microsoft">
+                                <i class="fab fa-microsoft me-2" aria-hidden="true"></i>Sign up with Microsoft
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="signup-footer">
+                <p class="mb-0">Already have an account? <a href="login.html" aria-label="Login to your account">Login</a></p>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast-container"></div>
+
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous"></script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const signupForm = document.getElementById('signupForm');
+            const firstNameInput = document.getElementById('firstName');
+            const lastNameInput = document.getElementById('lastName');
+            const emailInput = document.getElementById('email');
+            const passwordInput = document.getElementById('password');
+            const confirmPasswordInput = document.getElementById('confirmPassword');
+            const userTypeInput = document.getElementById('userType');
+            const termsCheckbox = document.getElementById('termsAgreement');
+            const togglePassword = document.getElementById('togglePassword');
+            const passwordStrengthBar = document.getElementById('passwordStrength');
+            const toastContainer = document.querySelector('.toast-container');
+            
+            // Toggle password visibility
+            togglePassword.addEventListener('click', function() {
+                const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                passwordInput.setAttribute('type', type);
+                this.querySelector('i').classList.toggle('fa-eye');
+                this.querySelector('i').classList.toggle('fa-eye-slash');
+                
+                // Update aria-label for accessibility
+                const label = type === 'password' ? 'Show password' : 'Hide password';
+                this.setAttribute('aria-label', label);
+            });
+            
+            
+            passwordInput.addEventListener('input', function() {
+                const password = this.value;
+                let strength = 0;
+                
+                // Length check
+                if (password.length >= 8) strength += 1;
+                if (password.length >= 12) strength += 1;
+                
+                // Character type checks
+                if (/[A-Z]/.test(password)) strength += 1;
+                if (/[0-9]/.test(password)) strength += 1;
+                if (/[^A-Za-z0-9]/.test(password)) strength += 1;
+                
+                
+                const width = (strength / 5) * 100;
+                passwordStrengthBar.style.width = `${width}%`;
+                
+                // Update color based on strength
+                if (strength <= 2) {
+                    passwordStrengthBar.style.backgroundColor = '#dc3545'; // Red
+                } else if (strength <= 4) {
+                    passwordStrengthBar.style.backgroundColor = '#ffc107'; // Yellow
+                } else {
+                    passwordStrengthBar.style.backgroundColor = '#28a745'; // Green
+                }
+            });
+            
+            // Form validation
+            signupForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Reset validation
+                [firstNameInput, lastNameInput, emailInput, passwordInput, confirmPasswordInput, userTypeInput].forEach(input => {
+                    input.classList.remove('is-invalid');
+                });
+                
+                // Validate first name
+                if (!firstNameInput.value.trim()) {
+                    firstNameInput.classList.add('is-invalid');
+                    showToast('error', 'Please enter your first name');
+                    firstNameInput.focus();
+                    return;
+                }
+                
+                // Validate last name
+                if (!lastNameInput.value.trim()) {
+                    lastNameInput.classList.add('is-invalid');
+                    showToast('error', 'Please enter your last name');
+                    lastNameInput.focus();
+                    return;
+                }
+                
+                // Validate email
+                if (!emailInput.value || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailInput.value)) {
+                    emailInput.classList.add('is-invalid');
+                    showToast('error', 'Please enter a valid email address');
+                    emailInput.focus();
+                    return;
+                }
+                
+                // Validate password
+                if (!passwordInput.value || passwordInput.value.length < 8) {
+                    passwordInput.classList.add('is-invalid');
+                    showToast('error', 'Password must be at least 8 characters');
+                    passwordInput.focus();
+                    return;
+                }
+                
+                // Validate password match
+                if (passwordInput.value !== confirmPasswordInput.value) {
+                    confirmPasswordInput.classList.add('is-invalid');
+                    showToast('error', 'Passwords do not match');
+                    confirmPasswordInput.focus();
+                    return;
+                }
+                
+                // Validate user type
+                if (!userTypeInput.value) {
+                    userTypeInput.classList.add('is-invalid');
+                    showToast('error', 'Please select an account type');
+                    userTypeInput.focus();
+                    return;
+                }
+                
+                // Validate terms agreement
+                if (!termsCheckbox.checked) {
+                    termsCheckbox.classList.add('is-invalid');
+                    showToast('error', 'You must agree to the terms');
+                    return;
+                }
+                
+                // Form is valid - simulate signup
+                const formData = {
+                    firstName: firstNameInput.value.trim(),
+                    lastName: lastNameInput.value.trim(),
+                    email: emailInput.value,
+                    password: passwordInput.value,
+                    userType: userTypeInput.value,
+                    agreedToTerms: termsCheckbox.checked
+                };
+                
+                // Show loading state
+                const submitBtn = signupForm.querySelector('button[type="submit"]');
+                const originalBtnText = submitBtn.innerHTML;
+                submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Creating account...';
+                submitBtn.disabled = true;
+                
+                // Simulate API call 
+                setTimeout(() => {
+                    
+                    submitBtn.innerHTML = originalBtnText;
+                    submitBtn.disabled = false;
+                    
+                    
+                    showToast('success', 'Account created successfully! Redirecting...');
+                    
+                    // Redirect to login after delay
+                    setTimeout(() => {
+                        window.location.href = 'login.html';
+                    }, 1500);
+                }, 2000);
+            });
+            
+            // Show toast notification
+            function showToast(type, message) {
+                const toast = document.createElement('div');
+                toast.className = `toast align-items-center text-white bg-${type === 'success' ? 'success' : 'danger'} border-0`;
+                toast.setAttribute('role', 'alert');
+                toast.setAttribute('aria-live', 'assertive');
+                toast.setAttribute('aria-atomic', 'true');
+                
+                toast.innerHTML = `
+                    <div class="d-flex">
+                        <div class="toast-body">
+                            <i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'} me-2"></i>
+                            ${message}
+                        </div>
+                        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                    </div>
+                `;
+                
+                toastContainer.appendChild(toast);
+                const bsToast = new bootstrap.Toast(toast);
+                bsToast.show();
+                
+               
+                toast.addEventListener('hidden.bs.toast', () => {
+                    toast.remove();
+                });
+            }
+            
+            // Add input validation on blur
+            firstNameInput.addEventListener('blur', () => validateRequiredField(firstNameInput, 'First name'));
+            lastNameInput.addEventListener('blur', () => validateRequiredField(lastNameInput, 'Last name'));
+            emailInput.addEventListener('blur', validateEmail);
+            passwordInput.addEventListener('blur', validatePassword);
+            confirmPasswordInput.addEventListener('blur', validatePasswordMatch);
+            userTypeInput.addEventListener('change', () => validateRequiredField(userTypeInput, 'Account type'));
+            
+            function validateRequiredField(input, fieldName) {
+                if (!input.value.trim()) {
+                    input.classList.add('is-invalid');
+                    showToast('error', `Please enter your ${fieldName.toLowerCase()}`);
+                } else {
+                    input.classList.remove('is-invalid');
+                }
+            }
+            
+            function validateEmail() {
+                if (!emailInput.value || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailInput.value)) {
+                    emailInput.classList.add('is-invalid');
+                    showToast('error', 'Please enter a valid email address');
+                } else {
+                    emailInput.classList.remove('is-invalid');
+                }
+            }
+            
+            function validatePassword() {
+                if (!passwordInput.value || passwordInput.value.length < 8) {
+                    passwordInput.classList.add('is-invalid');
+                    showToast('error', 'Password must be at least 8 characters');
+                } else {
+                    passwordInput.classList.remove('is-invalid');
+                }
+            }
+            
+            function validatePasswordMatch() {
+                if (passwordInput.value !== confirmPasswordInput.value) {
+                    confirmPasswordInput.classList.add('is-invalid');
+                    showToast('error', 'Passwords do not match');
+                } else {
+                    confirmPasswordInput.classList.remove('is-invalid');
+                }
+            }
+        });
+    </script>
+</body>
+</html>

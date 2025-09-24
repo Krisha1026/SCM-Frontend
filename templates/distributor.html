@@ -1,0 +1,1082 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cozy Comfort | Distributor Portal</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #8B5FBF;
+            --secondary: #D4A5E9;
+            --light: #F8F1FF;
+            --dark: #2E294E;
+            --warm: #FF9F1C;
+            --success: #6BCB77;
+            --warning: #FFD166;
+            --danger: #EF476F;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f9f6ff;
+            color: var(--dark);
+            background-image: url('https://images.unsplash.com/photo-1531265726475-52ad60219627?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+        
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(248, 241, 255, 0.9);
+            z-index: -1;
+        }
+        
+        .navbar-brand {
+            font-family: 'Playfair Display', serif;
+            font-weight: 700;
+            color: var(--primary);
+            font-size: 1.8rem;
+        }
+        
+        .dashboard-header {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border-bottom: 5px solid var(--primary);
+        }
+        
+        .card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+            margin-bottom: 1.5rem;
+            overflow: hidden;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+        }
+        
+        .card-header {
+            background: var(--primary);
+            color: white;
+            font-weight: 600;
+            border-bottom: none;
+        }
+        
+        .table th {
+            background: var(--light);
+            color: var(--dark);
+            font-weight: 600;
+            border-top: none;
+        }
+        
+        .badge {
+            font-weight: 500;
+            padding: 0.5em 0.75em;
+        }
+        
+        .status-badge {
+            font-size: 0.85rem;
+            padding: 0.35em 0.65em;
+        }
+        
+        .btn-primary {
+            background: var(--primary);
+            border: none;
+            padding: 0.5rem 1.5rem;
+            border-radius: 50px;
+        }
+        
+        .btn-primary:hover {
+            background: #7a4da8;
+        }
+        
+        .btn-success {
+            background: var(--success);
+            border: none;
+            padding: 0.5rem 1.5rem;
+            border-radius: 50px;
+        }
+        
+        .btn-warning {
+            background: var(--warning);
+            border: none;
+            padding: 0.5rem 1.5rem;
+            border-radius: 50px;
+            color: var(--dark);
+        }
+        
+        .btn-danger {
+            background: var(--danger);
+            border: none;
+            padding: 0.5rem 1.5rem;
+            border-radius: 50px;
+        }
+        
+        .stock-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 5px;
+        }
+        
+        .stock-low {
+            background-color: var(--warning);
+        }
+        
+        .stock-out {
+            background-color: var(--danger);
+        }
+        
+        .stock-ok {
+            background-color: var(--success);
+        }
+        
+        .order-card {
+            border-left: 4px solid var(--primary);
+            transition: all 0.3s ease;
+        }
+        
+        .order-card:hover {
+            transform: translateX(5px);
+        }
+        
+        .modal-header {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .stat-card {
+            background: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+        
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+        
+        .stat-label {
+            color: #666;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .floating {
+            animation: floating 3s ease-in-out infinite;
+        }
+        
+        @keyframes floating {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+        
+        .toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1100;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <i class="fas fa-cloud me-2"></i>Cozy Comfort
+            </a>
+            <div class="d-flex align-items-center">
+                <span class="badge bg-primary rounded-pill px-3 py-2 me-3">
+                    Distributor Portal
+                </span>
+                <div class="dropdown">
+                    <button class="btn btn-outline-primary dropdown-toggle" type="button" id="userDropdown" data-bs-toggle="dropdown">
+                        <i class="fas fa-user-circle me-1"></i> Distributor Admin
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="#"><i class="fas fa-user me-2"></i>Profile</a></li>
+                        <li><a class="dropdown-item" href="#"><i class="fas fa-cog me-2"></i>Settings</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="#"><i class="fas fa-sign-out-alt me-2"></i>Logout</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- Main Content -->
+    <div class="container py-4">
+        <div class="dashboard-header">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <h1 class="display-5 fw-bold mb-3"><i class="fas fa-truck-loading me-2"></i>Distributor Dashboard</h1>
+                    <p class="lead mb-0">Manage inventory and fulfill orders for Cozy Comfort blankets</p>
+                </div>
+                <div class="col-md-4 text-end">
+                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addInventoryModal">
+                        <i class="fas fa-plus me-2"></i>Add Inventory
+                    </button>
+                    <br>
+                    <br>
+                    <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#createOrderModal">
+                        <i class="fas fa-file-alt me-2"></i>Create Order
+                    </button> 
+                </div>
+            </div>
+        </div>
+        
+        <div class="row">
+            <!-- Inventory Section -->
+            <div class="col-lg-8">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h3 class="mb-0"><i class="fas fa-boxes me-2"></i>Inventory Management</h3>
+                        <div class="dropdown">
+                            <button class="btn btn-sm btn-outline-light dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                <i class="fas fa-filter me-1"></i>Filter
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="#" onclick="filterInventory('all')">All Items</a></li>
+                                <li><a class="dropdown-item" href="#" onclick="filterInventory('low')">Low Stock</a></li>
+                                <li><a class="dropdown-item" href="#" onclick="filterInventory('out')">Out of Stock</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle">
+                                <thead>
+                                    <tr>
+                                        <th>Model ID</th>
+                                        <th>Model Name</th>
+                                        <th>Stock</th>
+                                        <th>Purchase Price</th>
+                                        <th>Selling Price</th>
+                                        <th>Margin</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="inventoryTable" class="table-group-divider">
+                                    <!-- Inventory items will be loaded here -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Stats and Orders Section -->
+            <div class="col-lg-4">
+                <div class="row">
+                    <div class="col-md-6 col-lg-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="mb-0"><i class="fas fa-chart-line me-2"></i>Quick Stats</h3>
+                            </div>
+                            <div class="card-body">
+                                <div class="row g-3">
+                                    <div class="col-6">
+                                        <div class="stat-card">
+                                            <div class="stat-value" id="pendingOrders">0</div>
+                                            <div class="stat-label">Pending Orders</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="stat-card">
+                                            <div class="stat-value" id="fulfilledToday">0</div>
+                                            <div class="stat-label">Fulfilled Today</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="stat-card">
+                                            <div class="stat-value" id="backorders">0</div>
+                                            <div class="stat-label">Backorders</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="stat-card">
+                                            <div class="stat-value" id="totalInventory">0</div>
+                                            <div class="stat-label">Total Items</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6 col-lg-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="mb-0"><i class="fas fa-clock me-2"></i>Recent Orders</h3>
+                            </div>
+                            <div class="card-body">
+                                <div id="recentOrdersList" class="list-group list-group-flush">
+                                    <!-- Recent orders will be loaded here -->
+                                    <div class="text-center py-4">
+                                        <div class="spinner-border text-primary" role="status">
+                                            <span class="visually-hidden">Loading...</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Add Inventory Modal -->
+    <div class="modal fade" id="addInventoryModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="fas fa-plus-circle me-2"></i>Add to Inventory</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="inventoryForm">
+                        <div class="mb-3">
+                            <label class="form-label">Blanket Model ID</label>
+                            <input type="number" class="form-control" id="blanketModelId" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Quantity</label>
+                            <input type="number" class="form-control" id="quantity" min="1" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Purchase Price (per unit)</label>
+                            <div class="input-group">
+                                <span class="input-group-text">$</span>
+                                <input type="number" step="0.01" class="form-control" id="purchasePrice" min="0.01" required>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Selling Price (per unit)</label>
+                            <div class="input-group">
+                                <span class="input-group-text">$</span>
+                                <input type="number" step="0.01" class="form-control" id="sellingPrice" min="0.01" required>
+                            </div>
+                        </div>
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save me-2"></i>Add Inventory
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Edit Inventory Modal -->
+    <div class="modal fade" id="editInventoryModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="fas fa-edit me-2"></i>Edit Inventory</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="editInventoryForm">
+                        <input type="hidden" id="editInventoryId">
+                        <div class="mb-3">
+                            <label class="form-label">Blanket Model ID</label>
+                            <input type="number" class="form-control" id="editBlanketModelId" disabled>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Blanket Model Name</label>
+                            <input type="text" class="form-control" id="editBlanketModelName" disabled>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Quantity</label>
+                            <input type="number" class="form-control" id="editQuantity" min="0" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Purchase Price (per unit)</label>
+                            <div class="input-group">
+                                <span class="input-group-text">$</span>
+                                <input type="number" step="0.01" class="form-control" id="editPurchasePrice" min="0.01" required>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Selling Price (per unit)</label>
+                            <div class="input-group">
+                                <span class="input-group-text">$</span>
+                                <input type="number" step="0.01" class="form-control" id="editSellingPrice" min="0.01" required>
+                            </div>
+                        </div>
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save me-2"></i>Update Inventory
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Order Fulfillment Modal -->
+    <div class="modal fade" id="fulfillOrderModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="fas fa-truck-loading me-2"></i>Fulfill Order</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="fulfillmentForm">
+                        <input type="hidden" id="orderId">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Seller ID:</label>
+                            <p id="sellerIdDisplay" class="form-control-static">-</p>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Model:</label>
+                            <p id="modelDisplay" class="form-control-static">-</p>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Quantity:</label>
+                            <p id="quantityDisplay" class="form-control-static">-</p>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Available Stock:</label>
+                            <p id="availableStock" class="form-control-static">-</p>
+                        </div>
+                        <div class="mb-4">
+                            <label class="form-label fw-bold">Fulfillment Option</label>
+                            <select class="form-select" id="fulfillmentOption" required>
+                                <option value="">Select an option</option>
+                                <option value="fulfilled">Fulfill from Inventory</option>
+                                <option value="backordered">Place as Backorder</option>
+                                <option value="cancelled">Cancel Order</option>
+                            </select>
+                        </div>
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-success">
+                                <i class="fas fa-check-circle me-2"></i>Process Order
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Create Order Modal -->
+    <div class="modal fade" id="createOrderModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="fas fa-file-alt me-2"></i>Create New Order</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="createOrderForm">
+                        <div class="mb-3">
+                            <label class="form-label">Seller ID</label>
+                            <input type="text" class="form-control" id="sellerId" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Blanket Model ID</label>
+                            <input type="number" class="form-control" id="orderModelId" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Quantity</label>
+                            <input type="number" class="form-control" id="orderQuantity" min="1" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Order Date</label>
+                            <input type="date" class="form-control" id="orderDate" required>
+                        </div>
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-success">
+                                <i class="fas fa-check-circle me-2"></i>Submit Order
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+   
+    <div class="toast-container"></div>
+    
+   
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+    
+    <script>
+        
+        const DISTRIBUTOR_API = 'http://localhost:5001/api';
+        const MANUFACTURER_API = 'http://localhost:5000/api';
+        
+      
+        document.addEventListener('DOMContentLoaded', function() {
+            loadInventory();
+            loadOrders();
+            document.getElementById('orderDate').valueAsDate = new Date();
+        });
+        
+        // Load inventory from API
+        function loadInventory() {
+            fetch(`${DISTRIBUTOR_API}/inventory`)
+                .then(response => {
+                    if (!response.ok) throw new Error('Network response was not ok');
+                    return response.json();
+                })
+                .then(inventory => {
+                    const inventoryTable = document.getElementById('inventoryTable');
+                    const totalInventoryElement = document.getElementById('totalInventory');
+                    
+                    
+                    inventoryTable.innerHTML = '';
+                    
+                    
+                    totalInventoryElement.textContent = inventory.length;
+                    
+                    // Add inventory items to table
+                    inventory.forEach(item => {
+                        const profitMargin = ((item.selling_price - item.purchase_price) / item.purchase_price * 100).toFixed(1);
+                        const stockClass = item.quantity === 0 ? 'stock-out' : (item.quantity < 10 ? 'stock-low' : 'stock-ok');
+                        
+                        const row = document.createElement('tr');
+                        row.className = item.quantity === 0 ? 'table-danger' : (item.quantity < 10 ? 'table-warning' : '');
+                        
+                        row.innerHTML = `
+                            <td>${item.blanket_model_id}</td>
+                            <td>${item.blanket_model_name || 'Unknown Model'}</td>
+                            <td>
+                                <span class="stock-indicator ${stockClass}"></span>
+                                ${item.quantity}
+                            </td>
+                            <td>$${item.purchase_price.toFixed(2)}</td>
+                            <td>$${item.selling_price.toFixed(2)}</td>
+                            <td>
+                                <span class="badge ${profitMargin > 30 ? 'bg-success' : (profitMargin > 15 ? 'bg-warning' : 'bg-danger')}">
+                                    ${profitMargin}%
+                                </span>
+                            </td>
+                            <td>
+                                <div class="d-flex gap-2">
+                                    <button class="btn btn-sm btn-outline-primary" onclick="editInventory(${item.id})">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-danger" onclick="deleteInventory(${item.id})">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        `;
+                        inventoryTable.appendChild(row);
+                    });
+                })
+                .catch(error => {
+                    console.error('Error loading inventory:', error);
+                    const inventoryTable = document.getElementById('inventoryTable');
+                    inventoryTable.innerHTML = `
+                        <tr>
+                            <td colspan="7" class="text-center text-danger py-4">
+                                <i class="fas fa-exclamation-triangle fa-2x mb-3"></i>
+                                <p>Failed to load inventory data</p>
+                                <button class="btn btn-sm btn-primary" onclick="loadInventory()">
+                                    <i class="fas fa-sync me-2"></i>Retry
+                                </button>
+                            </td>
+                        </tr>
+                    `;
+                });
+        }
+        
+        // Filter inventory
+        function filterInventory(type) {
+            const rows = document.querySelectorAll('#inventoryTable tr');
+            rows.forEach(row => {
+                if (row.cells && row.cells.length > 2) {
+                    const quantity = parseInt(row.cells[2].textContent.trim());
+                    switch(type) {
+                        case 'low':
+                            row.style.display = quantity < 10 && quantity > 0 ? '' : 'none';
+                            break;
+                        case 'out':
+                            row.style.display = quantity === 0 ? '' : 'none';
+                            break;
+                        default:
+                            row.style.display = '';
+                    }
+                }
+            });
+        }
+        
+        // Load orders from API
+        function loadOrders() {
+            fetch(`${DISTRIBUTOR_API}/orders`)
+                .then(response => {
+                    if (!response.ok) throw new Error('Network response was not ok');
+                    return response.json();
+                })
+                .then(orders => {
+                    const recentOrdersList = document.getElementById('recentOrdersList');
+                    let pendingCount = 0;
+                    let fulfilledCount = 0;
+                    let backorderCount = 0;
+                    const today = new Date().toISOString().split('T')[0];
+                    
+                    // Clear existing orders
+                    recentOrdersList.innerHTML = '';
+                    
+                    if (orders.length === 0) {
+                        recentOrdersList.innerHTML = `
+                            <div class="text-center py-4">
+                                <i class="fas fa-inbox fa-2x mb-3 text-muted"></i>
+                                <p class="text-muted">No recent orders found</p>
+                            </div>
+                        `;
+                    } else {
+                        // Sort orders by date (newest first)
+                        orders.sort((a, b) => new Date(b.order_date) - new Date(a.order_date));
+                        
+                        orders.slice(0, 5).forEach(order => {
+                            if (order.status === 'pending') pendingCount++;
+                            if (order.status === 'fulfilled' && order.fulfillment_date && order.fulfillment_date.includes(today)) fulfilledCount++;
+                            if (order.status === 'backordered') backorderCount++;
+                            
+                            const orderDiv = document.createElement('a');
+                            orderDiv.className = 'list-group-item list-group-item-action order-card';
+                            orderDiv.innerHTML = `
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="mb-1">Order #${order.id}</h6>
+                                        <small class="text-muted">Seller: ${order.seller_id} | Model: ${order.blanket_model_id}</small>
+                                        <div><small>${new Date(order.order_date).toLocaleString()}</small></div>
+                                    </div>
+                                    <div class="text-end">
+                                        <span class="badge ${getStatusBadgeClass(order.status)} status-badge">
+                                            ${order.status}
+                                        </span>
+                                        <div class="mt-1">
+                                            <small class="text-muted">Qty: ${order.quantity}</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            `;
+                            orderDiv.onclick = () => showFulfillment(order.id, order.blanket_model_id, order.quantity, order.seller_id);
+                            recentOrdersList.appendChild(orderDiv);
+                        });
+                    }
+                    
+                    // Update order counts
+                    document.getElementById('pendingOrders').textContent = pendingCount;
+                    document.getElementById('fulfilledToday').textContent = fulfilledCount;
+                    document.getElementById('backorders').textContent = backorderCount;
+                })
+                .catch(error => {
+                    console.error('Error loading orders:', error);
+                    const recentOrdersList = document.getElementById('recentOrdersList');
+                    recentOrdersList.innerHTML = `
+                        <div class="text-center py-4">
+                            <i class="fas fa-exclamation-triangle fa-2x mb-3 text-danger"></i>
+                            <p class="text-danger">Failed to load orders</p>
+                            <button class="btn btn-sm btn-primary" onclick="loadOrders()">
+                                <i class="fas fa-sync me-2"></i>Retry
+                            </button>
+                        </div>
+                    `;
+                });
+        }
+        
+        // Handle new inventory form submission
+        document.getElementById('inventoryForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const submitBtn = this.querySelector('button[type="submit"]');
+            const originalBtnText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Adding...';
+            submitBtn.disabled = true;
+            
+            // First get model name from manufacturer
+            const modelId = document.getElementById('blanketModelId').value;
+            fetch(`${MANUFACTURER_API}/blankets/${modelId}`)
+                .then(response => {
+                    if (!response.ok) throw new Error('Model not found in manufacturer system');
+                    return response.json();
+                })
+                .then(blanket => {
+                    const newInventory = {
+                        blanket_model_id: modelId,
+                        blanket_model_name: blanket.model_name,
+                        quantity: parseInt(document.getElementById('quantity').value),
+                        purchase_price: parseFloat(document.getElementById('purchasePrice').value),
+                        selling_price: parseFloat(document.getElementById('sellingPrice').value)
+                    };
+                    
+                    return fetch(`${DISTRIBUTOR_API}/inventory`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(newInventory)
+                    });
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        return response.json().then(err => {
+                            throw new Error(err.message || 'Failed to add inventory');
+                        });
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    showToast('success', 'Inventory added successfully!');
+                    loadInventory();
+                    document.getElementById('inventoryForm').reset();
+                    bootstrap.Modal.getInstance(document.getElementById('addInventoryModal')).hide();
+                })
+                .catch(error => {
+                    console.error('Error adding inventory:', error);
+                    showToast('error', error.message || 'Failed to add inventory. Please check the model ID and try again.');
+                })
+                .finally(() => {
+                    submitBtn.innerHTML = originalBtnText;
+                    submitBtn.disabled = false;
+                });
+        });
+        
+        // Edit inventory function
+        function editInventory(inventoryId) {
+            fetch(`${DISTRIBUTOR_API}/inventory/${inventoryId}`)
+                .then(response => {
+                    if (!response.ok) throw new Error('Failed to load inventory item');
+                    return response.json();
+                })
+                .then(item => {
+                    document.getElementById('editInventoryId').value = item.id;
+                    document.getElementById('editBlanketModelId').value = item.blanket_model_id;
+                    document.getElementById('editBlanketModelName').value = item.blanket_model_name || 'Unknown Model';
+                    document.getElementById('editQuantity').value = item.quantity;
+                    document.getElementById('editPurchasePrice').value = item.purchase_price;
+                    document.getElementById('editSellingPrice').value = item.selling_price;
+                    
+                    const modal = new bootstrap.Modal(document.getElementById('editInventoryModal'));
+                    modal.show();
+                })
+                .catch(error => {
+                    console.error('Error loading inventory item:', error);
+                    showToast('error', 'Failed to load inventory details');
+                });
+        }
+        
+        // Handle edit inventory form submission
+        document.getElementById('editInventoryForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const submitBtn = this.querySelector('button[type="submit"]');
+            const originalBtnText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Updating...';
+            submitBtn.disabled = true;
+            
+            const inventoryId = document.getElementById('editInventoryId').value;
+            const updatedData = {
+                quantity: parseInt(document.getElementById('editQuantity').value),
+                purchase_price: parseFloat(document.getElementById('editPurchasePrice').value),
+                selling_price: parseFloat(document.getElementById('editSellingPrice').value)
+            };
+            
+            fetch(`${DISTRIBUTOR_API}/inventory/${inventoryId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(updatedData)
+            })
+            .then(response => {
+                if (!response.ok) {
+                    return response.json().then(err => {
+                        throw new Error(err.message || 'Failed to update inventory');
+                    });
+                }
+                return response.json();
+            })
+            .then(data => {
+                showToast('success', 'Inventory updated successfully!');
+                loadInventory();
+                bootstrap.Modal.getInstance(document.getElementById('editInventoryModal')).hide();
+            })
+            .catch(error => {
+                console.error('Error updating inventory:', error);
+                showToast('error', error.message || 'Failed to update inventory');
+            })
+            .finally(() => {
+                submitBtn.innerHTML = originalBtnText;
+                submitBtn.disabled = false;
+            });
+        });
+        
+        // Delete inventory function
+        function deleteInventory(inventoryId) {
+            if (confirm('Are you sure you want to delete this inventory item?')) {
+                fetch(`${DISTRIBUTOR_API}/inventory/${inventoryId}`, {
+                    method: 'DELETE'
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        return response.json().then(err => {
+                            throw new Error(err.message || 'Failed to delete inventory');
+                        });
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    showToast('success', 'Inventory item deleted successfully!');
+                    loadInventory();
+                })
+                .catch(error => {
+                    console.error('Error deleting inventory:', error);
+                    showToast('error', error.message || 'Failed to delete inventory item');
+                });
+            }
+        }
+        
+        // Show order fulfillment modal
+        function showFulfillment(orderId, modelId, quantity, sellerId) {
+           
+            fetch(`${DISTRIBUTOR_API}/inventory`)
+                .then(response => {
+                    if (!response.ok) throw new Error('Failed to fetch inventory');
+                    return response.json();
+                })
+                .then(inventory => {
+                    const item = inventory.find(i => i.blanket_model_id == modelId);
+                    const availableStock = item ? item.quantity : 0;
+                    
+                    document.getElementById('orderId').value = orderId;
+                    document.getElementById('sellerIdDisplay').textContent = sellerId;
+                    document.getElementById('modelDisplay').textContent = modelId;
+                    document.getElementById('quantityDisplay').textContent = quantity;
+                    document.getElementById('availableStock').textContent = availableStock;
+                    
+                    // Set default option based on stock
+                    const fulfillmentOption = document.getElementById('fulfillmentOption');
+                    if (availableStock >= quantity) {
+                        fulfillmentOption.value = 'fulfilled';
+                    } else {
+                        fulfillmentOption.value = 'backordered';
+                    }
+                    
+                    const modal = new bootstrap.Modal(document.getElementById('fulfillOrderModal'));
+                    modal.show();
+                })
+                .catch(error => {
+                    console.error('Error checking inventory:', error);
+                    showToast('error', 'Failed to check inventory levels');
+                });
+        }
+        
+        // Handle order fulfillment form submission
+        document.getElementById('fulfillmentForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const submitBtn = this.querySelector('button[type="submit"]');
+            const originalBtnText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Processing...';
+            submitBtn.disabled = true;
+            
+            const orderId = document.getElementById('orderId').value;
+            const option = document.getElementById('fulfillmentOption').value;
+            
+            let updateData = { status: option };
+            if (option === 'fulfilled') {
+                updateData.fulfillment_date = new Date().toISOString().split('T')[0];
+            }
+            
+            fetch(`${DISTRIBUTOR_API}/orders/${orderId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(updateData)
+            })
+            .then(response => {
+                if (!response.ok) {
+                    return response.json().then(err => {
+                        throw new Error(err.message || 'Failed to update order');
+                    });
+                }
+                return response.json();
+            })
+            .then(data => {
+                showToast('success', 'Order status updated successfully!');
+                loadOrders();
+                loadInventory();
+                bootstrap.Modal.getInstance(document.getElementById('fulfillOrderModal')).hide();
+            })
+            .catch(error => {
+                console.error('Error updating order:', error);
+                showToast('error', error.message || 'Failed to update order status');
+            })
+            .finally(() => {
+                submitBtn.innerHTML = originalBtnText;
+                submitBtn.disabled = false;
+            });
+        });
+        
+        // Handle new order form submission
+        document.getElementById('createOrderForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const submitBtn = this.querySelector('button[type="submit"]');
+            const originalBtnText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Processing...';
+            submitBtn.disabled = true;
+            
+           
+            const modelId = document.getElementById('orderModelId').value;
+            fetch(`${MANUFACTURER_API}/blankets/${modelId}`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`Model ${modelId} not found in manufacturer system`);
+                    }
+                    return response.json();
+                })
+                .then(blanket => {
+                    // Create the order object
+                    const newOrder = {
+                        seller_id: document.getElementById('sellerId').value,
+                        blanket_model_id: modelId,
+                        blanket_model_name: blanket.model_name,
+                        quantity: parseInt(document.getElementById('orderQuantity').value),
+                        order_date: document.getElementById('orderDate').value || new Date().toISOString().split('T')[0],
+                        status: 'pending'
+                    };
+                    
+                    console.log('Creating order in distributor system:', newOrder);
+                    
+                    // Save to distributor database 
+                    return fetch(`${DISTRIBUTOR_API}/orders`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(newOrder)
+                    })
+                    .then(response => {
+                        if (!response.ok) {
+                            return response.json().then(err => {
+                                throw new Error(err.message || 'Failed to create order in distributor system');
+                            });
+                        }
+                        return response.json();
+                    })
+                    .then(distributorOrder => {
+                        console.log('Order created in distributor system, now creating in manufacturer:', distributorOrder);
+                        
+                        // send to manufacturer database
+                        return fetch(`${MANUFACTURER_API}/distributor-orders`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                seller_id: newOrder.seller_id,
+                                blanket_model_id: newOrder.blanket_model_id,
+                                blanket_model_name: newOrder.blanket_model_name,
+                                quantity: newOrder.quantity,
+                                status: newOrder.status,
+                                order_date: newOrder.order_date,
+                                distributor_order_id: distributorOrder.id // Include distributor order ID for reference
+                            })
+                        })
+                        .then(response => {
+                            if (!response.ok) {
+                                return response.json().then(err => {
+                                    throw new Error(err.message || 'Failed to create order in manufacturer system');
+                                });
+                            }
+                            return response.json();
+                        });
+                    });
+                })
+                .then(data => {
+                    showToast('success', 'Order created successfully in both systems!');
+                    loadOrders();
+                    document.getElementById('createOrderForm').reset();
+                    bootstrap.Modal.getInstance(document.getElementById('createOrderModal')).hide();
+                })
+                .catch(error => {
+                    console.error('Error creating order:', error);
+                    showToast('error', error.message || 'Failed to create order');
+                    
+                    
+                    loadOrders();
+                })
+                .finally(() => {
+                    submitBtn.innerHTML = originalBtnText;
+                    submitBtn.disabled = false;
+                });
+        });
+        
+        
+        function getStatusBadgeClass(status) {
+            switch(status) {
+                case 'fulfilled': return 'bg-success';
+                case 'pending': return 'bg-warning text-dark';
+                case 'backordered': return 'bg-danger';
+                case 'cancelled': return 'bg-secondary';
+                default: return 'bg-primary';
+            }
+        }
+        
+        // Show toast notification
+        function showToast(type, message) {
+            const toastContainer = document.createElement('div');
+            toastContainer.className = `toast align-items-center text-white bg-${type} border-0`;
+            toastContainer.setAttribute('role', 'alert');
+            toastContainer.setAttribute('aria-live', 'assertive');
+            toastContainer.setAttribute('aria-atomic', 'true');
+            
+            toastContainer.innerHTML = `
+                <div class="d-flex">
+                    <div class="toast-body">
+                        <i class="fas ${type === 'success' ? 'fa-check-circle' : (type === 'error' ? 'fa-exclamation-circle' : 'fa-info-circle')} me-2"></i>
+                        ${message}
+                    </div>
+                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+                </div>
+            `;
+            
+            document.querySelector('.toast-container').appendChild(toastContainer);
+            const toast = new bootstrap.Toast(toastContainer);
+            toast.show();
+            
+            
+            toastContainer.addEventListener('hidden.bs.toast', () => {
+                toastContainer.remove();
+            });
+        }
+    </script>
+</body>
+</html>
